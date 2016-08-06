@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="C:/Users/pablo/Desktop/fpga2016/tpFinal/sistema_tb_isim_beh.wdb" id="1" type="auto">
+         <top_modules>
+            <top_module name="constants" />
+            <top_module name="sistema_tb" />
+            <top_module name="std_logic_1164" />
+            <top_module name="std_logic_arith" />
+            <top_module name="std_logic_unsigned" />
+            <top_module name="textio" />
+            <top_module name="vcomponents" />
+            <top_module name="vital_primitives" />
+            <top_module name="vital_timing" />
+            <top_module name="vpkg" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <WVObjectSize size="14" />
+   <wvobject fp_name="/sistema_tb/clk" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/reset" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reset</obj_property>
+      <obj_property name="ObjectShortName">reset</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/in_serie" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">in_serie</obj_property>
+      <obj_property name="ObjectShortName">in_serie</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/switch" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">switch[3:0]</obj_property>
+      <obj_property name="ObjectShortName">switch[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/boton" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">boton</obj_property>
+      <obj_property name="ObjectShortName">boton</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/led_out" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">led_out[7:0]</obj_property>
+      <obj_property name="ObjectShortName">led_out[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/clk_period" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">clk_period</obj_property>
+      <obj_property name="ObjectShortName">clk_period</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/uut/ci/reg_who_load" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">reg_who_load</obj_property>
+      <obj_property name="ObjectShortName">reg_who_load</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/uut/ci/irq_out" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">irq_out</obj_property>
+      <obj_property name="ObjectShortName">irq_out</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/uut/ci/pico_ack_in" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">pico_ack_in</obj_property>
+      <obj_property name="ObjectShortName">pico_ack_in</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/uut/pico/processor/read_strobe" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">read_strobe</obj_property>
+      <obj_property name="ObjectShortName">read_strobe</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/uut/ci/ci_state" type="other" db_ref_id="1">
+      <obj_property name="ElementShortName">ci_state</obj_property>
+      <obj_property name="ObjectShortName">ci_state</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/uut/pico/out_port" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">out_port[7:0]</obj_property>
+      <obj_property name="ObjectShortName">out_port[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/sistema_tb/uut/pico/write_strobe" type="logic" db_ref_id="1">
+      <obj_property name="ElementShortName">write_strobe</obj_property>
+      <obj_property name="ObjectShortName">write_strobe</obj_property>
+   </wvobject>
+</wave_config>
