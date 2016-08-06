@@ -11,6 +11,10 @@ NET "led_out<4>"  LOC = "c11"  ;
 NET "led_out<5>"  LOC = "d11"  ;
 NET "led_out<6>"  LOC = "e9"  ;
 NET "led_out<7>"  LOC = "f9"  ;
+NET "switch<0>" LOC = "l13";
+NET "switch<1>" LOC = "l14";
+NET "switch<2>" LOC = "h18";
+NET "switch<3>" LOC = "n17";
 NET "reset"  LOC = "d18" | PULLDOWN ;
 NET "boton"  LOC = "h13" | PULLDOWN;
 
