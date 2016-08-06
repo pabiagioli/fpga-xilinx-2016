@@ -131,7 +131,7 @@ BEGIN
 		wait for clk_period*1000;
 		assert led_out = "00000011";
 		switch <= "0000";
-		data_in <= "00110001";
+		data_in <= "01110001";
 		write_buffer <= '1';
 		en_16_x_baud <= '1';
 		boton <= '0';
@@ -140,7 +140,9 @@ BEGIN
 		write_buffer <= '0';
 		en_16_x_baud <= '0';
 		boton <= '0';
-      wait;
+      wait for 1000 ms;
+		assert led_out = "11111111";
+		wait;
    end process;
 
 END;

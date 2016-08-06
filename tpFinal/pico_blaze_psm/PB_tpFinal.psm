@@ -11,6 +11,7 @@ mascara_serial_conc       EQU       $03        ; mascara para recuperar si el da
 
 serial_limite_inf      EQU    $30        ; caracter 0
 serial_limite_sup      EQU    $39        ; caracter 9
+cuenta_regresiva       EQU    $FF        ; constante 255 para cuenta regresiva
 
 
           ORG      0                   ; SE ALOCA EL CODIGO AL INICIO DEL BLOQUE DE MEMORIA
@@ -19,6 +20,9 @@ serial_limite_sup      EQU    $39        ; caracter 9
           XOR      s4, s4              ; Limpieza de registros
           XOR      s5, s5
           XOR      s8, s8
+          LOAD     s7, $FF             ; Cuenta regresiva para conmutar LED
+          LOAD     s6, $03             ; Contador de destellos
+          LOAD     s3, $FF             ; El destello empieza con todos unos
           EINT                         ; SE HABILITAN LAS INTERRUPCIONES
 
 Inicio:                                ; bucle en espera de interrupciones
@@ -31,25 +35,15 @@ f_prender_todos_leds:
            OUT s8, Pout_dato
            RETI ENABLE
 
+f_delay_tercio_seg:
+           SUB  s7 , $01
+           JUMP   NZ, f_delay_tercio_seg
 f_destello_led:
-         XOR s8, s8
-         ADD s8, $FF
-         OUT s8, Pout_dato
-         XOR s8, s8
-         OUT s8, Pout_dato
-         XOR s8, s8
-         ADD s8, $FF
-         OUT s8, Pout_dato
-         XOR s8, s8
-         OUT s8, Pout_dato
-         XOR s8, s8
-         ADD s8, $FF
-         OUT s8, Pout_dato
-         XOR s8, s8
-         OUT s8, Pout_dato
-         XOR s8, s8
-         ADD s8, $FF
-         OUT s8, Pout_dato
+	     LOAD s7, cuenta_regresiva
+         OUT  s3, Pout_dato
+         XOR  s3, $FF
+         SUB  s6 , $01
+         JUMP NZ , f_delay_tercio_seg
          RETI ENABLE
 
 f_serial:
@@ -73,7 +67,7 @@ f_switches:
          RETI ENABLE
 
 
-INTERRUPCIONES:                               ; AQU� EL CODIGO DE LA RUTINA DE INTERRUPCION
+INTERRUPCIONES:                               ; AQU? EL CODIGO DE LA RUTINA DE INTERRUPCION
           XOR      s4, s4                     ; Limpieza de registros
           XOR      s5, s5
           XOR      s8, s8
