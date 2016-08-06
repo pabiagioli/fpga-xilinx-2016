@@ -2,99 +2,95 @@
                     VHDL      "ROM_Pico3.vhd", "aplicacion.vhd", "memoria"
 
 Pin                 DSIN      $22                 ; puerto de entrada
-Pout_who            DSOUT     $00             	  ; puerto de salida who
-Pout_dato			DSOUT	  $01			  	  ; puerto de salida dato
+Pout_who            DSOUT     $00                 ; puerto de salida who
+Pout_dato           DSOUT     $01                 ; puerto de salida dato
 
-mascara_switch			  EQU		$01			  ; mascara para comprobar si el dato vino del switch
-mascara_serial            EQU       $02 		  ; mascara para recuperar si el dato vino del serial
-mascara_serial_conc       EQU       $03 		  ; mascara para recuperar si el dato vino del serial y del switch al mismo tiempo
+mascara_switch            EQU       $01        ; mascara para comprobar si el dato vino del switch
+mascara_serial            EQU       $02        ; mascara para recuperar si el dato vino del serial
+mascara_serial_conc       EQU       $03        ; mascara para recuperar si el dato vino del serial y del switch al mismo tiempo
 
-serial_limite_inf		  EQU		$30			  ; caracter 0
-serial_limite_sup		  EQU		$39			  ; caracter 9
-
-
-                    ORG       0                   ; SE ALOCA EL CODIGO AL INICIO DEL BLOQUE DE MEMORIA
+serial_limite_inf      EQU    $30        ; caracter 0
+serial_limite_sup      EQU    $39        ; caracter 9
 
 
-                    XOR       s4, s4              ; Limpieza de registros
-					XOR		  s5, s5
-					XOR		  s8, s8
+          ORG      0                   ; SE ALOCA EL CODIGO AL INICIO DEL BLOQUE DE MEMORIA
 
-                    EINT                          ; SE HABILITAN LAS INTERRUPCIONES
 
-Inicio:                                           ; bucle en espera de interrupciones
+          XOR      s4, s4              ; Limpieza de registros
+          XOR      s5, s5
+          XOR      s8, s8
+          EINT                         ; SE HABILITAN LAS INTERRUPCIONES
 
-                    LOAD      sB, sB              ; NOP
-                    JUMP      Inicio
+Inicio:                                ; bucle en espera de interrupciones
+        LOAD      sB, sB               ; NOP
+        JUMP      Inicio
 
 f_prender_todos_leds:
-					 XOR s8, s8
-					 ADD s8, $FF
-					 OUT s8, Pout_dato
-					 RETI ENABLE
+           XOR s8, s8
+           ADD s8, $FF
+           OUT s8, Pout_dato
+           RETI ENABLE
+
 f_destello_led:
-			   XOR s8, s8
-			   ADD s8, $FF
-			   OUT s8, Pout_dato
-			   XOR s8, s8
-			   OUT s8, Pout_dato
-			   XOR s8, s8
-			   ADD s8, $FF
-			   OUT s8, Pout_dato
-			   XOR s8, s8
-			   OUT s8, Pout_dato
-			   XOR s8, s8
-			   ADD s8, $FF
-			   OUT s8, Pout_dato
-			   XOR s8, s8
-			   OUT s8, Pout_dato
-			   XOR s8, s8
-			   ADD s8, $FF
-			   OUT s8, Pout_dato
-			   RETI ENABLE
+         XOR s8, s8
+         ADD s8, $FF
+         OUT s8, Pout_dato
+         XOR s8, s8
+         OUT s8, Pout_dato
+         XOR s8, s8
+         ADD s8, $FF
+         OUT s8, Pout_dato
+         XOR s8, s8
+         OUT s8, Pout_dato
+         XOR s8, s8
+         ADD s8, $FF
+         OUT s8, Pout_dato
+         XOR s8, s8
+         OUT s8, Pout_dato
+         XOR s8, s8
+         ADD s8, $FF
+         OUT s8, Pout_dato
+         RETI ENABLE
 
 f_serial:
-		 IN s5, Pin 	  			  			  	 ; leer el dato propiamente dicho que vino del puerto serie
-		 
-		 ADD s8, serial_limite_sup 		 			 ; meto 0x39 en s8
-		 COMP s8, s5 								 ; if (0x39 < s5) Carry = 1
-		 JUMP C, f_destello_led 					 ; Salto si carry = 1
-		
-		 COMP s5, serial_limite_inf 				 ; if (s5 < 0x30) Carry = 1
-		 JUMP C, f_destello_led 					 ; Salto si carry = 1
-		 
-		 JUMP f_prender_todos_leds 					 ; Salto al ELSE porque s5 esta entre 30 y 39
-		 RETI ENABLE
-		
+         IN s5, Pin                        ; leer el dato propiamente dicho que vino del puerto serie
+
+         ADD s8, serial_limite_sup         ; meto 0x39 en s8
+         COMP s8, s5                       ; if (0x39 < s5) Carry = 1
+         JUMP C, f_destello_led            ; Salto si carry = 1
+
+         COMP s5, serial_limite_inf        ; if (s5 < 0x30) Carry = 1
+         JUMP C, f_destello_led            ; Salto si carry = 1
+
+         JUMP f_prender_todos_leds         ; Salto al ELSE porque s5 esta entre 30 y 39
+         RETI ENABLE
+
 f_switches:
-		   IN s5, Pin 								 ; leer el dato propiamente dicho que vino de los switches
-		   TEST s5, s5	  							 ; quiero la paridad impar de s5 que me va a quedar en el CARRY
-		   SLA s5 									 ; Shift left, con Carry, si era [0,0,0,0,s3,s2,s1,s0] => [0,0,0,s3,s2,s1,s0,CARRY]
-		   OUT s5, Pout_dato
-		   RETI ENABLE
-		
-
-INTERRUPCIONES:                                   	 ; AQUÍ EL CODIGO DE LA RUTINA DE INTERRUPCION	
-					XOR       s4, s4              	 ; Limpieza de registros
-					XOR		  s5, s5
-					XOR		  s8, s8
-													
-                    IN        s4, Pin             	 ; leemos el dato que dice que tipo de entrada vendra
-					OUT		  s4, Pout_who		  	 ; sale lo mismo que entro para avisarle al irq_handler
-
-					COMP      s4, mascara_switch 	 ; Se verifica si el tipo de dato sera de los switches
-                    JUMP      Z, f_switches 		 ; Salto a rutina de Switches
-                    
-					COMP      s4, mascara_serial	 ; Se verifica si el tipo de dato sera del puerto Serie
-                    JUMP      Z, f_serial			 ; salto a rutina de Serie
-                    
-					COMP      s4, mascara_serial_conc	 ; Se verifica si el tipo de dato sera del puerto Serie y switches al mismo tiempo
-                    JUMP      Z, f_serial			 ; salto a rutina de Serie
-                    
-                    RETI ENABLE				 ; Salto al inicio si vino sarasa
-
-                    ORG       $3FF 					 ; EL VECTOR DE INTERUPCIONES EN LA ULTIMA DIRECCION
-                    JUMP      INTERRUPCIONES 		 ; a la rutina de servicio
+         IN s5, Pin                  ; leer el dato propiamente dicho que vino de los switches
+         TEST s5, s5                 ; quiero la paridad impar de s5 que me va a quedar en el CARRY
+         SLA s5                      ; Shift left, con Carry, si era [0,0,0,0,s3,s2,s1,s0] => [0,0,0,s3,s2,s1,s0,CARRY]
+         OUT s5, Pout_dato
+         RETI ENABLE
 
 
+INTERRUPCIONES:                               ; AQUï¿½ EL CODIGO DE LA RUTINA DE INTERRUPCION
+          XOR      s4, s4                     ; Limpieza de registros
+          XOR      s5, s5
+          XOR      s8, s8
 
+          IN       s4, Pin                    ; leemos el dato que dice que tipo de entrada vendra
+          OUT      s4, Pout_who               ; sale lo mismo que entro para avisarle al irq_handler
+
+          COMP    s4, mascara_switch          ; Se verifica si el tipo de dato sera de los switches
+          JUMP    Z, f_switches               ; Salto a rutina de Switches
+
+          COMP    s4, mascara_serial          ; Se verifica si el tipo de dato sera del puerto Serie
+          JUMP    Z, f_serial                 ; salto a rutina de Serie
+
+          COMP      s4, mascara_serial_conc   ; Se verifica si el tipo de dato sera del puerto Serie y switches al mismo tiempo
+          JUMP      Z, f_serial               ; salto a rutina de Serie
+
+          RETI ENABLE                         ; Salto al inicio si vino sarasa
+
+          ORG       $3FF                      ; EL VECTOR DE INTERUPCIONES EN LA ULTIMA DIRECCION
+          JUMP      INTERRUPCIONES            ; a la rutina de servicio
