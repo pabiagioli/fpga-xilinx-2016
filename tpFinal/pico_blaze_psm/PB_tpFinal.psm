@@ -21,8 +21,8 @@ cuenta_regresiva       EQU    $FF        ; constante 255 para cuenta regresiva
           XOR      s5, s5
           XOR      s8, s8
           LOAD     s7, $FF             ; Cuenta regresiva para conmutar LED
-          LOAD     s6, $03             ; Contador de destellos
-          LOAD     s3, $FF             ; El destello empieza con todos unos
+          LOAD     s6, $0F             ; Contador de destellos
+          LOAD     s3, $00             ; El destello empieza con todos unos
           EINT                         ; SE HABILITAN LAS INTERRUPCIONES
 
 Inicio:                                ; bucle en espera de interrupciones
@@ -35,15 +35,16 @@ f_prender_todos_leds:
            OUT s8, Pout_dato
            RETI ENABLE
 
-f_delay_tercio_seg:
-           SUB  s7 , $01
-           JUMP   NZ, f_delay_tercio_seg
 f_destello_led:
+	     LOAD s2, cuenta_regresiva
 	     LOAD s7, cuenta_regresiva
          OUT  s3, Pout_dato
          XOR  s3, $FF
+f_delay_tercio_seg:
+         SUB  s2 , $01
+	     JUMP   NZ, f_delay_tercio_seg
          SUB  s6 , $01
-         JUMP NZ , f_delay_tercio_seg
+         JUMP NZ , f_destello_led
          RETI ENABLE
 
 f_serial:
@@ -64,6 +65,7 @@ f_switches:
          TEST s5, s5                 ; quiero la paridad impar de s5 que me va a quedar en el CARRY
          SLA s5                      ; Shift left, con Carry, si era [0,0,0,0,s3,s2,s1,s0] => [0,0,0,s3,s2,s1,s0,CARRY]
          OUT s5, Pout_dato
+         ;JUMP f_destello_led
          RETI ENABLE
 
 
@@ -88,3 +90,4 @@ INTERRUPCIONES:                               ; AQU? EL CODIGO DE LA RUTINA DE I
 
           ORG       $3FF                      ; EL VECTOR DE INTERUPCIONES EN LA ULTIMA DIRECCION
           JUMP      INTERRUPCIONES            ; a la rutina de servicio
+

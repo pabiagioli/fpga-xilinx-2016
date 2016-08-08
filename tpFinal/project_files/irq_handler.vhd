@@ -94,7 +94,11 @@ reg_who: registro
 
 process(clk, reset)
 begin
-	if rising_edge(clk) then
+	if reset = '1' then 
+		irq_out <= '0';
+		data_out <= (others=>'0');
+		ci_state <= INIT;
+	elsif rising_edge(clk) then
 		case ci_state is
 			when INIT =>
 				irq_out <= '0';
