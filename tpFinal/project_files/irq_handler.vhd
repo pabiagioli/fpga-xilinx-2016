@@ -55,11 +55,10 @@ end component registro;
 
 type IRQ_MEF is (INIT, DATA_ENTERED, PROCESS_WHO, PROCESS_DATA, ACK);
 
-signal serial_reg : std_logic_vector (7 downto 0);
-signal switches_reg : std_logic_vector (3 downto 0);
-signal reg_who_in, reg_who_out : std_logic_vector (1 downto 0);
-signal reg_who_load: std_logic;
-signal irq_signal : std_logic;
+signal serial_reg : std_logic_vector (7 downto 0) := (others => '0');
+signal switches_reg : std_logic_vector (3 downto 0):= (others => '0');
+signal reg_who_in, reg_who_out : std_logic_vector (1 downto 0) := (others => '0');
+signal reg_who_load: std_logic := '0';
 
 signal ci_state: IRQ_MEF;
 
@@ -103,7 +102,7 @@ begin
 			when INIT =>
 				irq_out <= '0';
 				data_out <= (others=>'0');
-				if reg_who_load = '1' then ci_state <= PROCESS_WHO; end if;
+				if reg_who_load = '1' then ci_state <= DATA_ENTERED; end if;
 			when DATA_ENTERED =>
 				irq_out <= reg_who_load;
 				data_out <= "000000" & reg_who_out;
@@ -111,8 +110,6 @@ begin
 			when PROCESS_WHO =>
 				if pico_ack_in = '1' then 
 					irq_out <= '0';
-				else 
-					irq_out <= reg_who_load;
 				end if;
 				data_out <= "000000" & reg_who_out;
 				if pico_read_strobe = '1' then ci_state <= PROCESS_DATA; end if;
@@ -128,7 +125,7 @@ begin
 			when ACK =>
 				irq_out <= '0';
 				data_out <= (others=>'0');
-				if reg_who_load = '0' then ci_state <= INIT; end if;
+				if reg_who_load = '0' or pico_id_port_in = "00000001" then ci_state <= INIT; end if;
 			when others =>
 			irq_out <= '0';
 			data_out <= (others=>'0');

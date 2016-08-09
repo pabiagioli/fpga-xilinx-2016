@@ -506,7 +506,7 @@ DIPA => jdata( 9 - 1 downto 9 - 1 ), -- OJO JDATASIZE = 9
 				CLKA => clk,
 				ADDRA => address,
 				DOA => data_out,  
-DIB => jdata( 11 downto 9 - 1 ), -- OJO JDATASIZE = 9 Y LOS DI VUELTA  ademas cambiamos el tamaño a 4 bits
+DIB => jdata( 11 downto 9 - 1 ), -- OJO JDATASIZE = 9 Y LOS DI VUELTA  ademas cambiamos el tama?o a 4 bits
 
 				--DIB => jdata( JDATASIZE - 1 downto 16 ),   
 				ENB => juser1, 
